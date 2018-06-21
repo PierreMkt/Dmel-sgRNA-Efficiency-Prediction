@@ -1,13 +1,15 @@
 preprocess = function(input){
   total <- length(input$gRNA_30mer)
-  print(total)
+
   pb <- txtProgressBar(min = 0, max = total, style = 3)
+  
   for (l in seq(length(input$gRNA_30mer))) {
+    
     if(l %% 100 == 0.0){
       setTxtProgressBar(pb, l)
     }
     
-    # print(l)
+    input$gRNA_20mer[l] = substr(input$gRNA_30mer[l],5,27)
     
     # if(input$sgRNA_strand[l] == 1){
     #   input$gRNA_30mer[l] = str_extract(input$DNAplus[l], paste("....",input$gRNA1[l], "...", sep=""))

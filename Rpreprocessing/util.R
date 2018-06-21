@@ -1,6 +1,7 @@
 
 createColumns = function(input){
   #Create ordered columns 
+  input$gRNA_20mer = 0
   input$GCcont_20mer = 0
   input$Tm0_6 = 0
   input$Tm7_14 = 0
