@@ -22,14 +22,6 @@ import rpy2.robjects as robjects
 from rpy2.robjects import r, pandas2ri
 pandas2ri.activate()
 
-def csvParser(processed_sgRNAs):
-	with open(processed_sgRNAs) as f:
-		file = csv.reader(f,delimiter=',')
-		gRNAs = []
-		for row in file:
-			gRNA = row
-			gRNAs.append(gRNA)
-	return(gRNAs)
 
 def get_parser():
 	parser = argparse.ArgumentParser(description='''Calculates the sgRNA efficiency score for a given 30-mer sgRNA OR a csv file containing all sgRNA to predict.''', epilog="")
@@ -42,51 +34,85 @@ def get_parser():
 		A header row is required.''')
 	return(parser)
 
+
+def Rpreprocessing(f_input):
+	command = 'Rscript'
+	path2script = 'Rpreprocessing/sgRNA_Input_Processing.R'
+	cmd = [command, path2script, f_input]
+	subprocess.run(cmd)
+
+
+def csvParser(processed_sgRNAs):
+	try:
+		with open(processed_sgRNAs) as f:
+			file = csv.reader(f,delimiter=',')
+			gRNAs = []
+			for row in file:
+				gRNA = row
+				gRNAs.append(gRNA)
+	except:
+		raise Exception("could not find input stored to file %s" % processed_sgRNAs)
+
+	return(gRNAs)
+
+def PythonPreprocessing():
+	df_gRNAs = np.array(csvParser('R_Featurized_sgRNA.csv'), dtype='<U32')
+
+	names = df_gRNAs[0,2:]
+	gRNAs_param = np.array(df_gRNAs[1:,2:], dtype='float64')
+
+	sc = StandardScaler()
+	gRNAs_param[:,0:24] = sc.fit_transform(gRNAs_param[:,0:24])
+
+
+	model_file = '201FS_Ridge_model.pickle'
+
+	try:
+		pickle_in = open(model_file,"rb")
+		p_load = pickle.load(pickle_in)
+
+		
+	except:
+	    raise Exception("could not find model stored to file %s" % model_file)
+
+	RidgeModel = p_load['model']
+	idx = p_load['df_indexes']
+
+	gRNAs_param = gRNAs_param[:,idx]
+
+	return(gRNAs_param, RidgeModel)
+
+
 if __name__ == '__main__':
 	args = get_parser().parse_args()
-	assert ((args.csv is not None and args.seq is None) or (args.csv is None and args.seq is not None)), "you have to specify either 30mer sgRNA sequence or a csv file (see help)"
+	assert ((args.csv is not None and args.seq is None) or (args.csv is None and args.seq is not None)), "you have to specify either 30mer sgRNA sequence OR a csv file (see help)"
 	if args.csv != None : 
 
-		# Define command and arguments
-		command = 'Rscript'
-		path2script = 'Rpreprocessing/sgRNA_Input_Processing.R'
+		# Extract features from input sequences
+		Rpreprocessing(args.csv.name)
 
-		# Build subprocess command
-		cmd = [command, path2script, args.csv.name]
+	elif args.seq != None && len(args.seq)==30 :
 
+		# Extract features from input sequence
+		Rpreprocessing(args.seq)
 
-		# check_output will run the command and store to result
-		subprocess.run(cmd)
-
-		df_gRNAs = np.array(csvParser('Processed_Sequence.csv'), dtype='<U32')
-
-		names = df_gRNAs[0,2:]
-		gRNAs_param = np.array(df_gRNAs[1:,2:], dtype='float64')
-
-		sc = StandardScaler()
-		gRNAs_param[:,0:24] = sc.fit_transform(gRNAs_param[:,0:24])
-
-
-		model_file = '201FS_Ridge_model.pickle'
-
-		try:
-			pickle_in = open("201FS_Ridge_model.pickle","rb")
-			p_load = pickle.load(pickle_in)
-			RidgeModel = p_load['model']
-			idx = p_load['df_indexes']
-		except:
-		    raise Exception("could not find model stored to file %s" % model_file)
-
-		gRNAs_param = gRNAs_param[:,idx]
-
-		scores = RidgeModel.predict(gRNAs_param)
-		# print(scores)
-
-		pd.DataFrame({'gRNA_23mer' : df_gRNAs[1:,1], 'gRNA_30mer' : df_gRNAs[1:,0], 'scores' : scores}).to_csv("sgRNA_predictions.csv", index=False)
-
-	elif len(args.seq)==30 :
-		gRNA = args.seq
-		print(gRNA)
 	else :
-		print("sgRNA must be 30mer long (see help)")
+		print("wrong input (see --help)")
+
+
+	gRNAs_param, RidgeModel = PythonPreprocessing()
+
+	scores = RidgeModel.predict(gRNAs_param)
+	# print(scores)
+
+	pd.DataFrame({'gRNA_23mer' : df_gRNAs[1:,1], 'gRNA_30mer' : df_gRNAs[1:,0], 'scores' : scores}).to_csv("sgRNA_predictions.csv", index=False)
+
+	
+
+
+
+
+
+
+
 

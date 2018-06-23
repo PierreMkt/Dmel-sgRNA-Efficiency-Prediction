@@ -9,7 +9,7 @@ preprocess = function(input){
       setTxtProgressBar(pb, l)
     }
     
-    input$gRNA_20mer[l] = substr(input$gRNA_30mer[l],5,27)
+    input$gRNA_23mer[l] = substr(input$gRNA_30mer[l],5,27)
     
     # if(input$sgRNA_strand[l] == 1){
     #   input$gRNA_30mer[l] = str_extract(input$DNAplus[l], paste("....",input$gRNA1[l], "...", sep=""))
