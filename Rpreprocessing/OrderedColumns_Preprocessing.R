@@ -1,6 +1,19 @@
+# Author: Pierre Merckaert
+# Contact: merckaert.pierre@gmail.com
+# Date: 06/2018
+# 
+# Description : Create the columns for the input dataframe (specific order to make the predictions)
+# input : dataframe of the 30mer sequence 
+# output : dataframe of the 30mer sequence  and its features to extract (GC%, Melting Temp, indep order 1&2, dependant order 1&2,NGGN)
 
 createColumns = function(input){
-  #Create ordered columns 
+  nt = c('A','C','G','T')
+  dint = c('AA','AC','AG','AT',
+           'CA','CC','CG','CT',
+           'GA','GC','GG','GT',
+           'TA','TC','TG','TT')
+  
+  #Create ordered columns for 23mer, GC content and melting temperatures
   input$gRNA_23mer = 0
   input$GCcont_20mer = 0
   input$Tm0_6 = 0
@@ -8,21 +21,21 @@ createColumns = function(input){
   input$Tm15_19 = 0
   input$Tm30mer = 0
   
-  #create columns on single nt amount
+  #create columns on single nt amount (dependant order1)
   for (j in seq(length(nt))) {
     #amount
     nbColPos = paste('nb',nt[j],sep = '')
     input[[nbColPos]] = 0
   }
   
-  #create columns on single dint amount
+  #create columns on single dint amount (dependant order2)
   for (j in seq(length(dint))) {
     #amount
     nb_ColPos = paste('nb',dint[j],sep = '')
     input[[nb_ColPos]] = 0
   }
   
-  #create columns on single nt positions
+  #create columns on single nt positions (independant order1)
   for (j in seq(length(nt))) {
     #position
     for (loc in seq(-4,25)) {
@@ -31,7 +44,7 @@ createColumns = function(input){
     }
   }
   
-  #create columns on di-nt positions
+  #create columns on di-nt positions (independant order2)
   for (j in seq(length(dint))) {
     #position
     for (loc in seq(-4,24) ){
@@ -46,20 +59,4 @@ createColumns = function(input){
     input[[nggn_ColPos]] = 0
   }
   return(input)
-}
-
-#Tm calc function
-calcTm = function(seq){
-  nbA = str_count(seq,'A')
-  nbC = str_count(seq,'C')
-  nbT = str_count(seq,'T')
-  nbG = str_count(seq,'G')
-  
-  if(str_length(seq) <= 13){
-    Tm = (nbA+nbT)*2 + (nbG+nbC)*4 
-  }
-  else{
-    Tm= 64.9 +41*(nbG+nbC-16.4)/(nbA+nbT+nbG+nbC)
-  }
-  return(Tm)
 }
