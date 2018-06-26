@@ -21,6 +21,7 @@ preprocess = function(input){
       setTxtProgressBar(pb, l)
     }
     
+    input$gRNA_30mer = toupper(input$gRNA_30mer)
     input$gRNA_23mer[l] = substr(input$gRNA_30mer[l],5,27)
 
     #GC content

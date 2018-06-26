@@ -10,30 +10,26 @@
 
 #install required packages and import functions
 if(!require(stringr)) install.packages("stringr",repos = "http://cran.us.r-project.org")
-if(!exists("preprocess", mode="function")) source("Rpreprocessing/FeatureExtraction_Preprocessing.R")
-if(!exists("createColumns", mode="function")) source("Rpreprocessing/OrderedColumns_Preprocessing.R")
 
-args = commandArgs(trailingOnly=TRUE)
-print('Extracting Features from input')
-# test if there is at least one argument: if not, return an error
-if (length(args)==0) {
-  stop("At least one argument must be supplied (input 30mer sequence OR csv file)", call.=FALSE)
-} else if (length(args)==1) {
-    #error if input file is not a .csv 
-    if (substr(args[1],str_length(args[1])-3,str_length(args[1])) == '.csv'){
-      input = read.csv(args[1], sep = ',', stringsAsFactors = F,header = T)
-      colnames(input) = c("gRNA_30mer")
-    }
-    #create the dataframe if the input is a 30nt sequence
-    else if(str_length(args[1])==30){
-      input = data.frame(gRNA_30mer=args[1])
-    }
-  #error if input sequence is not 30 nucleotides long
-    else{
-      stop("input sequence must be 30 nucleotides long (-4 to 25, with NGG PAM at position 20)", call.=FALSE)
-    }
+args = commandArgs(trailingOnly=F)
+PATH = str_extract(args[4],'/.*/')
+
+
+if(!exists("preprocess", mode="function")) source(str_c(PATH,"FeatureExtraction_Preprocessing.R"))
+if(!exists("createColumns", mode="function")) source(str_c(PATH,"OrderedColumns_Preprocessing.R"))
+
+
+#error if input file is not a .csv 
+if (substr(args[6],str_length(args[6])-3,str_length(args[6])) == '.csv'){
+  input = read.csv(args[6], sep = ',', stringsAsFactors = F,header = T)
+  colnames(input) = c("gRNA_30mer")
+} else if(str_length(args[6])==30){  #create the dataframe if the input is a 30nt sequence
+  input = data.frame(gRNA_30mer=args[6])
+}else{ #error if input sequence is not 30 nucleotides long
+  stop("input sequence must be 30 nucleotides long (-4 to 25, with NGG PAM at position 20)", call.=FALSE)
 }
 
+print('Extracting Features from input')
 #create the columns of the dataframe
 input = createColumns(input)
 
@@ -41,4 +37,4 @@ input = createColumns(input)
 input = preprocess(input)
 
 #output the dataframe of the extracted features
-write.csv(input,"R_Featurized_sgRNA.csv",row.names = F)
+write.csv(input,str_c(PATH,"R_Featurized_sgRNA.csv"),row.names = F)
