@@ -7,6 +7,7 @@
 # Description: Extract the features required for efficiency prediction from 30mer sgRNA sequences
 # Input: 30mer sgRNA or csv file listing multiple sgRNA in the first column
 # Output: csv file of all the features extracted from the input sequences
+# The format of the output csv is (number of columns) : 30mer(1), 23mer(1), GC%(1), Tm(4), indep Order1(4), indep Order2(16), dep Order1(120), dep Order2(464), NGGN(16)
 
 #install required packages and import functions
 if(!require(stringr)) install.packages("stringr",repos = "http://cran.us.r-project.org")
