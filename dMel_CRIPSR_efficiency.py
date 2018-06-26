@@ -19,12 +19,12 @@ import numpy as np
 # Description: get the input arguments and sets up the --help
 # Output: parsed arguments
 def get_parser():
-	parser = argparse.ArgumentParser(description='''Calculates the sgRNA efficiency score for a given 30-mer sgRNA OR a csv file containing all sgRNA to predict.''', epilog="")
+	parser = argparse.ArgumentParser(description='''Calculates the sgRNA efficiency score for a given 30-mer sgRNA OR a csv file containing all sgRNA to predict. The score ranges between 0 and 1. The higher the better the sgRNA efficiency is predicted to be.''', epilog="")
 	parser.add_argument('--seq',
 		type=str,
 		help='30mer sgRNA + context sequence, NNNN[sgRNA sequence]NGGNNN')
 	parser.add_argument('--csv', type=argparse.FileType('r'),
-		help='''csv file containing all sgRNA to predict under a column named "gRNA_30mer".\n
+		help='''csv file containing all sgRNA to predict under a column header.\n
 		Format : Comma-delimited csv file with the list of 30mer sgRNAs in the first column. \n
 		A header row is required.''')
 	parser.add_argument('--out', type=str,
@@ -119,7 +119,7 @@ if __name__ == '__main__':
 	pd.DataFrame({'gRNA_23mer' : gRNAs_seq[:,1], 'gRNA_30mer' : gRNAs_seq[:,0], 'scores' : scores}).to_csv(output, index=False)
 
 	print('DONE. Results exported to %s' % output)
-	
+
 	#print prediction score in the terminal
 	if print_res :
 		print('Predicted efficiency score [0:1] for', args.seq.upper(),'= ',scores, '(the higher the better)')
