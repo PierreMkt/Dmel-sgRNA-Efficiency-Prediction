@@ -5,13 +5,9 @@ The score returned ranges between 0 and 1, the higher the more effective the sgR
 
 ### Requirements
 Softwares : Python3 & R   
-Python Packages :
-   1. sklearn
-   2. pickle    
-   3. pandas    
-   4. numpy
-   5. scipy
-
+To install required Python packages, run in your terminal :
+ > _pip3 install -r /path/to/requirements.txt_
+  
 ## Inputs
 1/ _--seq_ : the raw 30mer sequence.   
 Format of the raw sequence :  
