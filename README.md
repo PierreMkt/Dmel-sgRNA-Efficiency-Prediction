@@ -12,14 +12,13 @@ Python Packages :
    4. numpy   
 
 ## Inputs
-1. _--seq_ : the raw 30mer sequence.  
-
-#### Format of the raw sequence :
+1/ _--seq_ : the raw 30mer sequence.
+Format of the raw sequence :
 20mer sgRNA + PAM + context sequence : **NNNN[20mer sgRNA sequence]NGGNNN**   
-2. _--csv_ : .csv file with a header and the 30mer sgRNAs beneath   
-
-#### Format of the .csv file
-Comma delimited csv file    
+      
+      
+2/ _--csv_ : .csv file with a header and the 30mer sgRNAs beneath   
+Format of the **Comma delimited** .csv file
 
 |  _Header_  |
 | ------------- |
@@ -28,7 +27,7 @@ Comma delimited csv file
 |              ...                 | 
 |  GCCCAACCATGGGCAAGCGTCTGCAGGACA  | 
 
-3. _--out_ : (optional argument) Path and/or Name of the predictions output csv file. Default is PATH_TO_FOLDER/sgRNA_efficiency_prediciton/sgRNA_predictions.csv
+3/ _--out_ : (optional argument) Path and/or Name of the predictions output csv file. Default is PATH_TO_FOLDER/sgRNA_efficiency_prediciton/sgRNA_predictions.csv
 
 ## Outputs
 The R Pipeline outputs the dataframe of the extracted features from the 30mer sequences in PATH_TO_FOLDER/sgRNA_efficiency_prediciton/Rpreprocessing/R_Featurized_sgRNA.csv
