@@ -12,10 +12,9 @@ Python Packages :
    4. numpy   
 
 ## Inputs
-1/ _--seq_ : the raw 30mer sequence.
-Format of the raw sequence :
+1/ _--seq_ : the raw 30mer sequence.   
+Format of the raw sequence :  
 20mer sgRNA + PAM + context sequence : **NNNN[20mer sgRNA sequence]NGGNNN**   
-      
       
 2/ _--csv_ : .csv file with a header and the 30mer sgRNAs beneath   
 Format of the **Comma delimited** .csv file
