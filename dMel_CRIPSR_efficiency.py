@@ -92,6 +92,7 @@ def PythonPreprocessing(path):
 if __name__ == '__main__':
 	args = get_parser().parse_args()
 	path = os.path.dirname(os.path.realpath(__file__)) #path of the directory of this python script
+	# print(path)
 
 	assert ((args.csv is not None and args.seq is None) or (args.csv is None and args.seq is not None)), "you have to specify either 30mer sgRNA sequence OR a csv file (see help)"
 	if args.csv != None : 

@@ -14,6 +14,7 @@ if(!require(stringr)) install.packages("stringr",repos = "http://cran.us.r-proje
 
 args = commandArgs(trailingOnly=F)
 PATH = str_extract(args[4],'/.*/')
+# print(PATH)
 
 if(!exists("preprocess", mode="function")) source(str_c(PATH,"FeatureExtraction_Preprocessing.R"))
 if(!exists("createColumns", mode="function")) source(str_c(PATH,"OrderedColumns_Preprocessing.R"))
