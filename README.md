@@ -34,16 +34,17 @@ The prediction score for each sgRNA is written in a csv file that can be specifi
 Preferably, make the "sgRNA_efficiency_prediciton" folder your working directory.
 
 To run model prediction on a raw sgRNA, type on the terminal:   
-_python dMel_CRIPSR_efficiency.py --seq <30mer sequence> [--out <PATH_TO_OUTPUT>]_
+_python3 dMel_CRIPSR_efficiency.py --seq <30mer sequence> [--out <PATH_TO_OUTPUT>]_
    
 To run model prediction on a csv file, type on the terminal:    
-_python dMel_CRIPSR_efficiency.py --csv <PATH_TO_CSV_FILE> [--out <PATH_TO_OUTPUT>]_
+_python3 dMel_CRIPSR_efficiency.py --csv <PATH_TO_CSV_FILE> [--out <PATH_TO_OUTPUT>]_
 
 ### Examples
-_python dMel_CRIPSR_efficiency.py --seq TGGAGGCTGCTTTACCCGCTGTGGGGGCGC_    
+_python3 dMel_CRIPSR_efficiency.py --seq TGGAGGCTGCTTTACCCGCTGTGGGGGCGC_    
 Output : _Predicted efficiency score [0:1] for TGGAGGCTGCTTTACCCGCTGTGGGGGCGC =  [0.38789814] (the higher the better)_
 
-_python dMel_CRIPSR_efficiency.py --csv sgRNA_to_predict.csv_     
+The file TEST_sgRNA_to_predict.csv is provided as test file.
+_python3 dMel_CRIPSR_efficiency.py --csv TEST_sgRNA_to_predict.csv_     
 Output : _DONE. Results exported to /home/.../sgRNA_efficiency_prediction/sgRNA_predictions.csv_
 
 ## Authors
