@@ -6,10 +6,11 @@ The score returned ranges between 0 and 1, the higher the more effective the sgR
 ### Requirements
 Softwares : Python3 & R   
 Python Packages :
-   1. scikit-learn    
+   1. sklearn
    2. pickle    
    3. pandas    
-   4. numpy   
+   4. numpy
+   5. scipy
 
 ## Inputs
 1/ _--seq_ : the raw 30mer sequence.   
