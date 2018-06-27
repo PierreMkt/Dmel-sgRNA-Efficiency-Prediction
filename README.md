@@ -5,7 +5,7 @@ The score returned ranges between 0 and 1, the higher the more effective the sgR
 
 ### Requirements
 Softwares : Python3 & R   
-To install required Python packages, run in your terminal :
+To install required Python packages, run in your terminal :   
 ```_pip3 install -r /path/to/requirements.txt_```
   
 ## Inputs
@@ -40,11 +40,11 @@ To run model prediction on a csv file, type on the terminal:
 ```_python3 dMel_CRIPSR_efficiency.py --csv <PATH_TO_CSV_FILE> [--out <PATH_TO_OUTPUT>]_```
 
 ### Examples
-```_python3 dMel_CRIPSR_efficiency.py --seq TGGAGGCTGCTTTACCCGCTGTGGGGGCGC_    ```
+```_python3 dMel_CRIPSR_efficiency.py --seq TGGAGGCTGCTTTACCCGCTGTGGGGGCGC_```    
 Output : ```_Predicted efficiency score [0:1] for TGGAGGCTGCTTTACCCGCTGTGGGGGCGC =  [0.38789814] (the higher the better)_```
 
 The file TEST_sgRNA_to_predict.csv is provided as test file.   
-```_python3 dMel_CRIPSR_efficiency.py --csv TEST_sgRNA_to_predict.csv_     ```
+```_python3 dMel_CRIPSR_efficiency.py --csv TEST_sgRNA_to_predict.csv_```     
 Output : ```_DONE. Results exported to /home/.../sgRNA_efficiency_prediction/sgRNA_predictions.csv_```
 
 ## Authors
