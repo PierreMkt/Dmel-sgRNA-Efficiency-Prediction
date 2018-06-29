@@ -26,12 +26,14 @@ Format of the **Comma delimited** .csv file
 3/ _--out_ : (optional argument) Path and/or Name of the predictions output csv file. Default is PATH_TO_FOLDER/sgRNA_efficiency_prediciton/sgRNA_predictions.csv
 
 ## Outputs
-The R Pipeline outputs the dataframe of the extracted features from the 30mer sequences in PATH_TO_FOLDER/sgRNA_efficiency_prediciton/Rpreprocessing/R_Featurized_sgRNA.csv
+The R Pipeline outputs the dataframe of the extracted features from the 30mer sequences in PATH_TO_FOLDER/sgRNA_efficiency_prediction/Rpreprocessing/R_Featurized_sgRNA.csv
 
-The prediction score for each sgRNA is written in a csv file that can be specified via the _--out_ argument. By default, the scores are exported to PATH_TO_FOLDER/sgRNA_efficiency_prediciton/sgRNA_predictions.csv
+The prediction score for each sgRNA is written in a csv file that can be specified via the _--out_ argument.    
+By default, the scores are exported to PATH_TO_FOLDER/sgRNA_efficiency_prediction/sgRNA_predictions.csv
 
 ## Running the code
-Preferably, make the "sgRNA_efficiency_prediciton" folder your working directory.
+Preferably, make the "sgRNA_efficiency_prediction" folder your working directory.   
+```cd PATH_TO_FOLDER/sgRNA_efficiency_prediction```
 
 To run model prediction on a raw sgRNA, type on the terminal:   
 ```python3 dMel_CRIPSR_efficiency.py --seq <30mer sequence> [--out <PATH_TO_OUTPUT>]```
