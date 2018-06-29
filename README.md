@@ -35,10 +35,10 @@ By default, the scores are exported to PATH_TO_FOLDER/sgRNA_efficiency_predictio
 Preferably, make the "sgRNA_efficiency_prediction" folder your working directory.   
 ```cd PATH_TO_FOLDER/sgRNA_efficiency_prediction```
 
-To run model prediction on a raw sgRNA, type on the terminal:   
+To run model prediction on a raw sgRNA, type in the terminal:   
 ```python3 dMel_CRIPSR_efficiency.py --seq <30mer sequence> [--out <PATH_TO_OUTPUT>]```
    
-To run model prediction on a csv file, type on the terminal:    
+To run model prediction on a csv file, type in the terminal:    
 ```python3 dMel_CRIPSR_efficiency.py --csv <PATH_TO_CSV_FILE> [--out <PATH_TO_OUTPUT>]```
 
 ### Examples
