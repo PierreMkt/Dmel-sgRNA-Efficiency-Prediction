@@ -1,4 +1,4 @@
-# sgRNA-Efficiency-Prediction
+# Dmel-sgRNA-Efficiency-Prediction
 
 Python and R pipeline to predict sgRNA efficiency via a machine learning algorithm (Ridge regression) trained and optimized on CRIPSR pooled gene essentiality screens (see : https://www.biorxiv.org/content/early/2018/03/01/274464).   
 The score returned ranges between 0 and 1, the higher the more effective the sgRNA is predicted to be.
