@@ -6,7 +6,7 @@ The score returned ranges between 0 and 1, the higher the more effective the sgR
 ### Requirements
 Softwares : Python3 & R   
 To install required Python packages, run in your terminal :   
-```pip3 install -r /path/to/requirements.txt```
+```pip3 install -r /PATH/TO/requirements.txt```
   
 ## Inputs
 1/ _--seq_ : the raw 30mer sequence.   
