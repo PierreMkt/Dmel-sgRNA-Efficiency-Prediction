@@ -11,31 +11,27 @@
 
 #install required packages and import functions
 if(!require(stringr)) install.packages("stringr",repos = "http://cran.us.r-project.org")
+library(stringr)
 
 args = commandArgs(trailingOnly=F)
 PATH = str_extract(args[4],'/.*/')
-# print(PATH)
+if(is.na(PATH)){
+  PATH = './'
+}
 
 if(!exists("preprocess", mode="function")) source(str_c(PATH,"FeatureExtraction_Preprocessing.R"))
 if(!exists("createColumns", mode="function")) source(str_c(PATH,"OrderedColumns_Preprocessing.R"))
 
-
-#error if input file is not a .csv 
-if (substr(args[6],str_length(args[6])-3,str_length(args[6])) == '.csv'){
-  input = read.csv(args[6], sep = ',', stringsAsFactors = F,header = T)
-  colnames(input) = c("gRNA_30mer")
-} else if(str_length(args[6])==30){  #create the dataframe if the input is a 30nt sequence
-  input = data.frame(gRNA_30mer=args[6])
-}else{ #error if input sequence is not 30 nucleotides long
-  stop("input sequence must be 30 nucleotides long (-4 to 25, with NGG PAM at position 20)", call.=FALSE)
-}
+l_results = argsProcessing(args)
+input = l_results$df
+Nmer = l_results$Nmer
 
 print('Extracting Features from input')
-#create the columns of the dataframe
-input = createColumns(input)
 
-#extract the features from the input sequence(s) and fill the dataframe columns 
-input = preprocess(input)
+#create the columns of the dataframe and extract the features from the input sequence(s) and fill the dataframe columns 
+input = createColumns(input,Nmer)
+input = preprocess(input,Nmer)
+output = "R_Featurized_sgRNA.csv"
 
 #output the dataframe of the extracted features
-write.csv(input,str_c(PATH,"R_Featurized_sgRNA.csv"),row.names = F)
+write.csv(input,str_c(PATH,output),row.names = F)
