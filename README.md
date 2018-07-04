@@ -47,7 +47,7 @@ To run model prediction on a csv file, type in the terminal:
 ```python3 dMel_CRIPSR_efficiency.py --seq TGGAGGCTGCTTTACCCGCTGTGGGGGCGC```    
 Output : ```Predicted efficiency score [0:1] for TGGAGGCTGCTTTACCCGCTGTGGGGGCGC =  [0.38789814] (the higher the better)```
 
-The file TEST_sgRNA_to_predict.csv is provided as test file.   
+TEST_sgRNA23mer_to_predict.csv and TEST_sgRN30mer_to_predict are provided as test files.   
 ```python3 dMel_CRIPSR_efficiency.py --csv TEST_sgRNA23mer_to_predict.csv```     
 Output : ```DONE. Results exported to /home/.../sgRNA_efficiency_prediction/23mer_sgRNA_predictions.csv```
 
