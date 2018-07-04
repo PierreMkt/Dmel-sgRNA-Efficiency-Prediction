@@ -14,13 +14,15 @@ if(!require(stringr)) install.packages("stringr",repos = "http://cran.us.r-proje
 library(stringr)
 
 args = commandArgs(trailingOnly=F)
-PATH = str_extract(args[4],'/.*/')
+PATH = str_extract(substr(args[4],8,str_length(args[4])),'.*/')
+
 if(is.na(PATH)){
   PATH = './'
 }
 
 if(!exists("preprocess", mode="function")) source(str_c(PATH,"FeatureExtraction_Preprocessing.R"))
 if(!exists("createColumns", mode="function")) source(str_c(PATH,"OrderedColumns_Preprocessing.R"))
+if(!exists("argsProcessing", mode="function")) source(str_c(PATH,"OrderedColumns_Preprocessing.R"))
 
 l_results = argsProcessing(args)
 input = l_results$df

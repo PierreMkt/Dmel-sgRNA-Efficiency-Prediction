@@ -64,29 +64,37 @@ def PythonPreprocessing(path):
 	# The file format is : 30mer(1), 23mer(1), GC%(1), Tm(4), indep Order1(4), indep Order2(16), dep Order1, dep Order2, NGGN
 	df_gRNAs = np.array(csvParser(str(path)+'/Rpreprocessing/R_Featurized_sgRNA.csv'), dtype='<U32')
 
-	#First line is the features' names
-	names = df_gRNAs[0,2:]
-	#Features of the sequences
-	gRNAs_param = np.array(df_gRNAs[1:,2:], dtype='float64')
+	if df_gRNAs.shape[1] == 470 :
+		#Features of the sequences
+		gRNAs_param = np.array(df_gRNAs[1:,1:], dtype='float64')
+
+		#Load the Ridge regression model and the index of relevant features (201 out of 625)
+		model_file = str(path)+'/23mer_157FS_Ridge_REGmodel.pickle'
+		gRNAs_seq = df_gRNAs[1:,0]
+	elif df_gRNAs.shape[1] == 627 :	
+		#Features of the sequences
+		gRNAs_param = np.array(df_gRNAs[1:,2:], dtype='float64')
+		#Load the Ridge regression model and the index of relevant features (201 out of 625)
+		model_file = str(path)+'/30mer_201FS_Ridge_REGmodel.pickle'
+		gRNAs_seq = df_gRNAs[1:,0:2] 	 #23 and 30mer sequences
+	else :
+		stop('Error : wrong R pipeline output dimension')
 
 	#Standard Scaling of the non-binary features
 	sc = StandardScaler()
 	gRNAs_param[:,0:24] = sc.fit_transform(gRNAs_param[:,0:24])
 
-	#Load the Ridge regression model and the index of relevant features (201 out of 625)
-	model_file = str(path)+'/201FS_Ridge_model.pickle'
 	try:
 		pickle_in = open(model_file,"rb")
 		p_load = pickle.load(pickle_in)
-		RidgeModel = p_load['model']
+		ML_Model = p_load['model']
 		idx = p_load['df_indexes']
 	except:
 	    raise Exception("could not find model stored to file %s" % model_file)
-	
-	gRNAs_param = gRNAs_param[:,idx] #Keep only the 201 relevant features
-	gRNAs_seq = df_gRNAs[1:,0:2] 	 #23 and 30mer sequences
 
-	return(gRNAs_seq, gRNAs_param, RidgeModel)
+	gRNAs_param = gRNAs_param[:,idx] #Keep only the 201 relevant features
+
+	return(gRNAs_seq, gRNAs_param, ML_Model)
 
 
 if __name__ == '__main__':
@@ -98,7 +106,8 @@ if __name__ == '__main__':
 	if args.csv != None : 
 		# Extract features from input csv file
 		Rpreprocessing(os.path.realpath(args.csv.name), path)
-	elif (len(args.seq)==30) & (re.match(r"^[ATGCatgc]*$", args.seq)!=None):
+		print_res = False
+	elif ((len(args.seq)==30) | (len(args.seq)==23)) & (re.match(r"^[ATGCatgc]*$", args.seq)!=None):
 		# Extract features from input sequence
 		Rpreprocessing(args.seq.upper(), path)
 		print_res = True #print prediction score in the terminal
@@ -106,18 +115,30 @@ if __name__ == '__main__':
 		print("wrong input (see --help)")
 
 	#get the sgRNAs sequences, their features and the Machine Learning model
-	gRNAs_seq, gRNAs_param, RidgeModel = PythonPreprocessing(path)
+	gRNAs_seq, gRNAs_param, ML_Model = PythonPreprocessing(path)
 
-	scores = RidgeModel.predict(gRNAs_param) #Predictions !
+	scores = ML_Model.predict(gRNAs_param) #Predictions !
 
-	#Change the output if specified
-	if args.out != None :
-		output = args.out
-	else : 
-		output = path+"/sgRNA_predictions.csv"
-
-	#outputs the scores in a dataframe and save 
-	pd.DataFrame({'gRNA_23mer' : gRNAs_seq[:,1], 'gRNA_30mer' : gRNAs_seq[:,0], 'scores' : scores}).to_csv(output, index=False)
+	if gRNAs_param.shape[1] == 157 :
+		#Change the output if specified
+		if args.out != None :
+			output = args.out
+		else : 
+			output = path+"/23mer_sgRNA_predictions.csv"
+		#outputs the scores in a dataframe and save 
+		pd.DataFrame({'gRNA_23mer' : gRNAs_seq, 'scores' : scores}).to_csv(output, index=False)
+		
+	elif gRNAs_param.shape[1] == 201 :
+		#Change the output if specified
+		if args.out != None :
+			output = args.out
+		else : 
+			output = path+"/30mer_sgRNA_predictions.csv"
+		#outputs the scores in a dataframe and save 
+		pd.DataFrame({'gRNA_23mer' : gRNAs_seq[:,1], 'gRNA_30mer' : gRNAs_seq[:,0], 'scores' : scores}).to_csv(output, index=False)
+		
+	else :
+		stop('Error : wrong R pipeline output dimension')
 
 	print('DONE. Results exported to %s' % output)
 

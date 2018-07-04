@@ -26,8 +26,10 @@ argsProcessing = function(args){
     
   } else if(str_length(args[6])==30){  #create the dataframe if the input is a 30nt sequence
     input = data.frame(gRNA_30mer=args[6])
+    Nmer = 30
   } else if(str_length(args[6])==23){  #create the dataframe if the input is a 30nt sequence
     input = data.frame(gRNA_23mer=args[6])
+    Nmer = 23
   }else{ #error if input sequence is not 30 nucleotides long
     stop("input sequence must be 30 nucleotides long (-4 to 25, with NGG PAM at position 20) or 23 nucleotides long", call.=FALSE)
   }
