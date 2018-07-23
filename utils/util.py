@@ -66,14 +66,14 @@ def PythonPreprocessing(path):
 		#Features of the sequences
 		gRNAs_param = np.array(df_gRNAs[1:,1:], dtype='float64')
 		#Load the Ridge regression model and the index of relevant features (201 out of 625)
-		model_file = str(path)+'/utils/23mer_157FS_Ridge_REGmodel.pickle'
+		model_file = str(path)+'/utils/23mer_221FS_Ridge_REGmodel.pickle'
 		gRNAs_seq = df_gRNAs[1:,0] #23mer sequences
 
 	elif df_gRNAs.shape[1] == 627 :	#number of features extracted from 30mer sgRNAs
 		#Features of the sequences
 		gRNAs_param = np.array(df_gRNAs[1:,2:], dtype='float64')
 		#Load the Ridge regression model and the index of relevant features (201 out of 625)
-		model_file = str(path)+'/utils/30mer_201FS_Ridge_REGmodel.pickle'
+		model_file = str(path)+'/utils/30mer_133FS_LinSVR_REGmodel.pickle'
 		gRNAs_seq = df_gRNAs[1:,0:2] 	 #23 and 30mer sequences
 	else :
 		stop('Error : wrong R pipeline output dimension')
