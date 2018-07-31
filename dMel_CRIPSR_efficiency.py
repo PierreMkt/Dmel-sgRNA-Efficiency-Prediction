@@ -6,8 +6,8 @@ Author: Pierre Merckaert
 Contact: merckaert.pierre@gmail.com
 Date: 06/2018
 
-Description: Calculates the sgRNA efficiency score for a given 23 or 30-mer sgRNA or a csv file containing all sgRNA to predict.
-Input: 23 or 30mer sequence(s) : 20mer sgRNA + PAM (+ context sequence), NNNN[20mer sgRNA sequence]NGGNNN
+Description: Calculates the sgRNA efficiency score for a given 20, 23 or 30-mer sgRNA or a csv file containing all sgRNA to predict.
+Input: 20, 23 or 30mer sequence(s) : 20mer sgRNA + PAM (+ context sequence), NNNN[20mer sgRNA sequence]NGGNNN
 Output: efficiency score(s)
 """
 

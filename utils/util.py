@@ -16,23 +16,25 @@ from collections import OrderedDict
 # Description: get the input arguments and sets up the --help
 # Output: parsed arguments
 def get_parser():
-	parser = argparse.ArgumentParser(description='''Calculates the sgRNA efficiency score for a given 30-mer sgRNA OR a csv file containing all sgRNA to predict. The score ranges between 0 and 1. The higher the better the sgRNA efficiency is predicted to be.''', epilog="")
+	parser = argparse.ArgumentParser(description='''Calculates the sgRNA efficiency score for a given 20, 23 or 30-mer sgRNA OR a csv file containing all sgRNA to predict. The regression score ranges between 0 and 1 (The higher the better the sgRNA efficiency is predicted to be). the classification score is either 0 or 1 for poor and high efficiency respectively.''', epilog="")
 	parser.add_argument('--seq',
 		type=str,
-		help='30mer sgRNA + context sequence, NNNN[sgRNA sequence]NGGNNN')
+		help='''20mer : [20mer sgRNA sequence]\n
+		 23mer : [20mer sgRNA sequence]NGG\n
+		 30mer : NNNN[20mer sgRNA sequence]NGGNNN''')
 	parser.add_argument('--csv', type=argparse.FileType('r'),
 		help='''csv file containing all sgRNA to predict under a column header.\n
-		Format : Comma-delimited csv file with the list of 30mer sgRNAs in the first column. \n
+		Format : Comma-delimited csv file with the list of 20, 23 or 30mer sgRNAs in the first column. \n
 		A header row is required.''')
 	parser.add_argument('--out', type=str,
 		help='''Path and/or Name of the predictions output csv file. \n
 		Default is PATH_TO_FOLDER/sgRNA_efficiency_prediciton/sgRNA_predictions.csv''')
 	parser.add_argument('--bin', type=str, default='no',
-		help='''Choose with "yes" or "no" (default "no") whether or not to include binary classification prediction of the sgRNA efficiency in the output csv file''')
+		help='''Choose with "yes" or "no" (default "no") whether or not to include binary classification predictions of the sgRNA efficiency in the output csv file''')
 	return(parser)
 
 # Description: Run the R pipeline to extract the features from the input sequences
-# Input: f_input is the csv file or the 30mer sequence 		path is the path of the current script
+# Input: f_input is the csv file or the sgRNA sequence 		path is the path of the current script
 # Output: outputs the extracted features in /Rpreprocessing/R_Featurized_sgRNA.csv
 def Rpreprocessing(f_input, path):
 	command = 'Rscript'
@@ -58,7 +60,7 @@ def csvParser(processed_sgRNAs):
 
 # Description: Python pipeline to load the ML model and create the dataset for the efficiency prediction  
 # Input: path of the current file
-# Output: array of the 23 and 30mer sgRNAs, features of these sgRNAs and the ML model to make the efficiency predictions
+# Output: array of the sgRNAs, features of these sgRNAs and the ML model to make the efficiency predictions
 def PythonPreprocessing(path):
 	# Opens the extracted features of the R Pipeline
 	try :
@@ -69,7 +71,7 @@ def PythonPreprocessing(path):
 	if df_gRNAs.shape[1] == 470 : #number of features extracted from 23mer sgRNAs
 		#Features of the sequences
 		gRNAs_param = np.array(df_gRNAs[1:,1:], dtype='float64')
-		#Load the Ridge regression model and the index of relevant features
+
 		model_REG_file = str(path)+'/utils/23mer_135FS_Ridge_REGmodel.pickle'
 		model_CLASS_file = str(path)+'/utils/23mer_120FS_GBC_BINmodel.pickle'
 
@@ -78,7 +80,7 @@ def PythonPreprocessing(path):
 	elif df_gRNAs.shape[1] == 410 : #number of features extracted from 20mer sgRNAs
 		#Features of the sequences
 		gRNAs_param = np.array(df_gRNAs[1:,1:], dtype='float64')
-		#Load the Ridge regression model and the index of relevant features
+
 		model_REG_file = str(path)+'/utils/20mer_326FS_GBRT_REGmodel.pickle'
 		model_CLASS_file = str(path)+'/utils/20mer_137FS_GBC_BINmodel.pickle'
 
@@ -87,7 +89,7 @@ def PythonPreprocessing(path):
 	elif df_gRNAs.shape[1] == 627 :	#number of features extracted from 30mer sgRNAs
 		#Features of the sequences
 		gRNAs_param = np.array(df_gRNAs[1:,2:], dtype='float64')
-		#Load the Ridge regression model and the index of relevant features
+
 		model_REG_file = str(path)+'/utils/30mer_121FS_LinSVR_REGmodel.pickle'
 		model_CLASS_file = str(path)+'/utils/30mer_400FS_GBRC_BINmodel.pickle'
 
@@ -127,7 +129,7 @@ def PythonPreprocessing(path):
 # Input: arguments given to the script and path of the current file
 # Output: csv of the featurized sgRNAs and if the prediction scores should be written in the terminal
 def Launch_R_Preprocessing(args,path):
-	assert ((args.csv is not None and args.seq is None) or (args.csv is None and args.seq is not None)), "you have to specify either 30mer sgRNA sequence OR a csv file (see help)"
+	assert ((args.csv is not None and args.seq is None) or (args.csv is None and args.seq is not None)), "you have to specify either 20, 23 or 30mer sgRNA sequence OR a csv file (see help)"
 	if args.csv != None : 
 		# Extract features from input csv file
 		Rpreprocessing(os.path.realpath(args.csv.name), path)
@@ -164,7 +166,7 @@ def Output_Results(gRNAs_seq, gRNAs_param_REG, scores_REG, gRNAs_param_CLASS, sc
 		except:
 			raise Exception("Error in saving prediction results to %s. CSV file needed." % output)
 
-	elif gRNAs_param_REG.shape[1] == 326 : #shape of the dataframe after feature selection for 23mer sgRNAs
+	elif gRNAs_param_REG.shape[1] == 326 : #shape of the dataframe after feature selection for 20mer sgRNAs
 		#Change the output if specified
 		if args.out != None :
 			output = args.out
