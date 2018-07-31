@@ -1,6 +1,6 @@
 # Dmel-sgRNA-Efficiency-Prediction
 
-Python and R pipeline to predict sgRNA efficiency via a machine learning algorithm (Ridge regression) trained and optimized on CRIPSR pooled gene essentiality screens (see : https://www.biorxiv.org/content/early/2018/03/01/274464).   
+Python and R pipeline to predict sgRNA efficiency in *Drosophila melanogaster* via machine learning algorithms trained and optimized on CRIPSR pooled gene essentiality screens (see : https://www.biorxiv.org/content/early/2018/03/01/274464).   
 The regression score returned ranges between 0 and 1, the higher the more effective the sgRNA is predicted to be.    
 The classification score is either 0 or 1 for poor and high efficiency respectively.	
 
@@ -36,7 +36,7 @@ Format of the **Comma delimited** .csv file
 The R Pipeline outputs the dataframe of the extracted features from the 20, 23 or 30mer sequences in PATH_TO_FOLDER/sgRNA_efficiency_prediction/Rpreprocessing/R_Featurized_sgRNA.csv
 
 The prediction score for each sgRNA is written in a csv file that can be specified via the _--out_ argument.    
-By default, the scores are exported to PATH_TO_FOLDER/sgRNA_efficiency_prediction/sgRNA_predictions.csv
+By default, the scores are exported to PATH_TO_FOLDER/sgRNA_efficiency_prediction/*N*mer_sgRNA_predictions.csv
 
 ## Running the code
 Preferably, make the "sgRNA_efficiency_prediction" folder your working directory.   
