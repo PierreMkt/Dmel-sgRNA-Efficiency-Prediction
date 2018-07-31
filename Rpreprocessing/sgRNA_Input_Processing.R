@@ -14,6 +14,8 @@ if(!require(stringr)) install.packages("stringr",repos = "http://cran.us.r-proje
 library(stringr)
 
 args = commandArgs(trailingOnly=F)
+
+#retrieve the location of the file from the arguments
 PATH = str_extract(substr(args[4],8,str_length(args[4])),'.*/')
 
 if(is.na(PATH)){
@@ -28,7 +30,7 @@ l_results = argsProcessing(args)
 input = l_results$df
 Nmer = l_results$Nmer
 
-print('Extracting Features from input')
+print('Extracting Features from raw the sequence')
 
 #create the columns of the dataframe and extract the features from the input sequence(s) and fill the dataframe columns 
 input = createColumns(input,Nmer)

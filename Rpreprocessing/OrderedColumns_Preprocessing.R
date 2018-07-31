@@ -8,18 +8,20 @@ argsProcessing = function(args){
   #error if input file is not a .csv 
   if (substr(args[6],str_length(args[6])-3,str_length(args[6])) == '.csv'){
     input = read.csv(args[6], sep = ',', stringsAsFactors = F,header = T)
-    #check if the first row is a 30mer or 23mer
+    #check if the first row is a 20mer, 30mer or 23mer
     if(str_length(input[1,])==30){
       Nmer = 30
     } else if(str_length(input[1,])==23){
       Nmer = 23
+    } else if(str_length(input[1,])==20){
+      Nmer = 20
     } else {
-      stop("Error : sgRNA length should be 23 or 30 nucleotides long (see --help) ")
+      stop("Error : sgRNA length should be 20, 23 or 30 nucleotides long (see --help) ")
     }
-    #iterate over all rows to check if they all are 23 or 30 mer 
+    #iterate over all rows to check if they all are 20, 23 or 30 mer 
     for (i in seq(length(input[,]))) {
       if(str_length(input[i,])!=Nmer){
-        stop(str_c("Error : row ",i," sgRNA length should be 23 or 30 nucleotides long (see --help) "))
+        stop(str_c("Error : row ",i," sgRNA length should be 20, 23 or 30 nucleotides long (see --help) "))
       }
     }
     colnames(input) = str_c("gRNA_",Nmer,"mer")
@@ -30,8 +32,11 @@ argsProcessing = function(args){
   } else if(str_length(args[6])==23){  #create the dataframe if the input is a 30nt sequence
     input = data.frame(gRNA_23mer=args[6])
     Nmer = 23
-  }else{ #error if input sequence is not 30 nucleotides long
-    stop("input sequence must be 30 nucleotides long (-4 to 25, with NGG PAM at position 20) or 23 nucleotides long", call.=FALSE)
+  } else if(str_length(args[6])==20){  #create the dataframe if the input is a 30nt sequence
+    input = data.frame(gRNA_20mer=args[6])
+    Nmer = 20
+  } else{ #error if input sequence is not 30 nucleotides long
+    stop("input sequence must be 30 nucleotides long (-4 to 25, with NGG PAM at position 20) or 20 (no PAM) or 23 nucleotides long", call.=FALSE)
   }
   l_results = list("df" = input,"Nmer" = Nmer)
   return(l_results)
@@ -59,7 +64,7 @@ createColumns = function(input,Nmer){
     
     start = -4
     end = 25
-  }else{
+  }else if(Nmer==23){
     input$GCcont_20mer = 0
     input$Tm1_7 = 0
     input$Tm8_15 = 0
@@ -68,6 +73,15 @@ createColumns = function(input,Nmer){
     
     start = 1
     end = 23
+  }else{
+    input$GCcont_20mer = 0
+    input$Tm1_7 = 0
+    input$Tm8_15 = 0
+    input$Tm16_20 = 0
+    input$Tm20mer = 0
+    
+    start = 1
+    end = 20
   }
   
   #create columns on single nt amount (dependant order1)

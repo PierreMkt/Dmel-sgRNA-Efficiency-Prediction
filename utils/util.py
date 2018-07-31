@@ -11,6 +11,7 @@ import csv, argparse, os, sys, subprocess, pickle, sklearn, re
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
 import numpy as np
+from collections import OrderedDict
 
 # Description: get the input arguments and sets up the --help
 # Output: parsed arguments
@@ -24,7 +25,10 @@ def get_parser():
 		Format : Comma-delimited csv file with the list of 30mer sgRNAs in the first column. \n
 		A header row is required.''')
 	parser.add_argument('--out', type=str,
-		help='''Path and/or Name of the predictions output csv file. Default is PATH_TO_FOLDER/sgRNA_efficiency_prediciton/sgRNA_predictions.csv''')
+		help='''Path and/or Name of the predictions output csv file. \n
+		Default is PATH_TO_FOLDER/sgRNA_efficiency_prediciton/sgRNA_predictions.csv''')
+	parser.add_argument('--bin', type=str, default='no',
+		help='''Choose with "yes" or "no" (default "no") whether or not to include binary classification prediction of the sgRNA efficiency in the output csv file''')
 	return(parser)
 
 # Description: Run the R pipeline to extract the features from the input sequences
@@ -60,39 +64,63 @@ def PythonPreprocessing(path):
 	try :
 		df_gRNAs = np.array(csvParser(str(path)+'/Rpreprocessing/R_Featurized_sgRNA.csv'), dtype='<U32')
 	except :
-		raise Exception("could not find model stored to file %s" % model_file)
+		raise Exception("could not find Featurized sgRNAs stored to file %s" % df_gRNAs)	
 
 	if df_gRNAs.shape[1] == 470 : #number of features extracted from 23mer sgRNAs
 		#Features of the sequences
 		gRNAs_param = np.array(df_gRNAs[1:,1:], dtype='float64')
-		#Load the Ridge regression model and the index of relevant features (201 out of 625)
-		model_file = str(path)+'/utils/23mer_221FS_Ridge_REGmodel.pickle'
+		#Load the Ridge regression model and the index of relevant features
+		model_REG_file = str(path)+'/utils/23mer_135FS_Ridge_REGmodel.pickle'
+		model_CLASS_file = str(path)+'/utils/23mer_120FS_GBC_BINmodel.pickle'
+
 		gRNAs_seq = df_gRNAs[1:,0] #23mer sequences
+
+	elif df_gRNAs.shape[1] == 410 : #number of features extracted from 20mer sgRNAs
+		#Features of the sequences
+		gRNAs_param = np.array(df_gRNAs[1:,1:], dtype='float64')
+		#Load the Ridge regression model and the index of relevant features
+		model_REG_file = str(path)+'/utils/20mer_326FS_GBRT_REGmodel.pickle'
+		model_CLASS_file = str(path)+'/utils/20mer_137FS_GBC_BINmodel.pickle'
+
+		gRNAs_seq = df_gRNAs[1:,0] #20mer sequences
 
 	elif df_gRNAs.shape[1] == 627 :	#number of features extracted from 30mer sgRNAs
 		#Features of the sequences
 		gRNAs_param = np.array(df_gRNAs[1:,2:], dtype='float64')
-		#Load the Ridge regression model and the index of relevant features (201 out of 625)
-		model_file = str(path)+'/utils/30mer_133FS_LinSVR_REGmodel.pickle'
+		#Load the Ridge regression model and the index of relevant features
+		model_REG_file = str(path)+'/utils/30mer_121FS_LinSVR_REGmodel.pickle'
+		model_CLASS_file = str(path)+'/utils/30mer_400FS_GBRC_BINmodel.pickle'
+
 		gRNAs_seq = df_gRNAs[1:,0:2] 	 #23 and 30mer sequences
 	else :
-		stop('Error : wrong R pipeline output dimension')
+		raise Exception('Error : wrong R pipeline output dimension')
 
 	#Standard Scaling of the non-binary features
 	sc = StandardScaler()
-	gRNAs_param[:,0:24] = sc.fit_transform(gRNAs_param[:,0:24])
+	gRNAs_param[:,0:25] = sc.fit_transform(gRNAs_param[:,0:25])
 
+	#Load regression model
 	try:
-		pickle_in = open(model_file,"rb")
-		p_load = pickle.load(pickle_in)
-		ML_Model = p_load['model']
-		idx = p_load['df_indexes']
+		pickle_in_REG = open(model_REG_file,"rb")
+		p_load_REG = pickle.load(pickle_in_REG)
+		ML_Model_REG = p_load_REG['model']
+		idx_REG = p_load_REG['df_indexes']
 	except:
-	    raise Exception("could not find model stored to file %s" % model_file)
+	    raise Exception("could not find Regression model stored to file %s" % model_REG_file)
 
-	gRNAs_param = gRNAs_param[:,idx] #Keep only the 201 relevant features
+	#Load classification model
+	try:
+		pickle_in_CLASS = open(model_CLASS_file,"rb")
+		p_load_CLASS = pickle.load(pickle_in_CLASS)
+		ML_Model_CLASS = p_load_CLASS['model']
+		idx_CLASS = p_load_CLASS['df_indexes']
+	except:
+	    raise Exception("could not find classification model stored to file %s" % model_CLASS_file)
 
-	return(gRNAs_seq, gRNAs_param, ML_Model)
+	gRNAs_param_REG = gRNAs_param[:,idx_REG] #Keep only the relevant features
+	gRNAs_param_CLASS = gRNAs_param[:,idx_CLASS]
+
+	return(gRNAs_seq, gRNAs_param_REG, gRNAs_param_CLASS, ML_Model_REG, ML_Model_CLASS)
 
 
 # Description: run the R pipeline depending on the input given 
@@ -104,36 +132,54 @@ def Launch_R_Preprocessing(args,path):
 		# Extract features from input csv file
 		Rpreprocessing(os.path.realpath(args.csv.name), path)
 		print_res = False
-	elif ((len(args.seq)==30) | (len(args.seq)==23)) & (re.match(r"^[ATGCatgc]*$", args.seq)!=None):
+	elif ((len(args.seq)==30) | (len(args.seq)==23) | (len(args.seq)==20)) & (re.match(r"^[ATGCatgc]*$", args.seq)!=None):
 		# Extract features from input sequence
 		Rpreprocessing(args.seq.upper(), path)
 		print_res = True #print prediction score in the terminal
 	else :
-		print("wrong input (see --help)")
+		raise Exception("wrong input (see --help)")
 
 	return(print_res)
 
 
 # Description: Outputs the sgRNAs prediction scores in csv files
 # Input: 
-	#gRNAs_param : values of the relevant features
+	#gRNAs_param_REG : values of the relevant features for regression model
 	#gRNAs_seq : list of the sgRNAs to predict
 	#scores : prediction scores
 # Output: save the prediction scores to csv file
-def Output_Results(gRNAs_param, gRNAs_seq, scores, args, path):
-	if gRNAs_param.shape[1] == 157 : #shape of the dataframe after feature selection for 23mer sgRNAs
+def Output_Results(gRNAs_seq, gRNAs_param_REG, scores_REG, gRNAs_param_CLASS, scores_CLASS, args, path):
+	if gRNAs_param_REG.shape[1] == 135 : #shape of the dataframe after feature selection for 23mer sgRNAs
 		#Change the output if specified
 		if args.out != None :
 			output = args.out
 		else : 
 			output = path+"/23mer_sgRNA_predictions.csv"
+		#outputs the scores in a dataframe and save
+		try :
+			if args.bin == "no":
+				pd.DataFrame(OrderedDict({'gRNA_23mer' : gRNAs_seq, 'regression scores' : scores_REG})).to_csv(output, index=False)
+			else:
+				pd.DataFrame(OrderedDict({'gRNA_23mer' : gRNAs_seq, 'regression scores' : scores_REG, 'classification scores' : scores_CLASS})).to_csv(output, index=False)
+		except:
+			raise Exception("Error in saving prediction results to %s. CSV file needed." % output)
+
+	elif gRNAs_param_REG.shape[1] == 326 : #shape of the dataframe after feature selection for 23mer sgRNAs
+		#Change the output if specified
+		if args.out != None :
+			output = args.out
+		else : 
+			output = path+"/20mer_sgRNA_predictions.csv"
 		#outputs the scores in a dataframe and save 
 		try :
-			pd.DataFrame({'gRNA_23mer' : gRNAs_seq, 'scores' : scores}).to_csv(output, index=False)
+			if args.bin == "no":
+				pd.DataFrame(OrderedDict({'gRNA_20mer' : gRNAs_seq, 'regression scores' : scores_REG})).to_csv(output, index=False)
+			else:	
+				pd.DataFrame(OrderedDict({'gRNA_20mer' : gRNAs_seq, 'regression scores' : scores_REG, 'classification scores' : scores_CLASS})).to_csv(output, index=False)
 		except:
 			raise Exception("Error in saving prediction results to %s. CSV file needed." % output)
 		
-	elif gRNAs_param.shape[1] == 201 : #shape of the dataframe after feature selection for 30mer sgRNAs
+	elif gRNAs_param_REG.shape[1] == 121 : #shape of the dataframe after feature selection for 30mer sgRNAs
 		#Change the output if specified
 		if args.out != None :
 			output = args.out
@@ -141,9 +187,12 @@ def Output_Results(gRNAs_param, gRNAs_seq, scores, args, path):
 			output = path+"/30mer_sgRNA_predictions.csv"
 		#outputs the scores in a dataframe and save 
 		try :
-			pd.DataFrame({'gRNA_23mer' : gRNAs_seq[:,1], 'gRNA_30mer' : gRNAs_seq[:,0], 'scores' : scores}).to_csv(output, index=False)	
+			if args.bin == "no":
+				pd.DataFrame(OrderedDict({'gRNA_23mer' : gRNAs_seq[:,1], 'gRNA_30mer' : gRNAs_seq[:,0], 'regression scores' : scores_REG})).to_csv(output, index=False)
+			else:	
+				pd.DataFrame(OrderedDict({'gRNA_23mer' : gRNAs_seq[:,1], 'gRNA_30mer' : gRNAs_seq[:,0], 'regression scores' : scores_REG, 'classification scores' : scores_CLASS})).to_csv(output, index=False)	
 		except:
 			raise Exception("Error in saving prediction results to %s. CSV file needed." % output)
 	else :
-		stop('Error : wrong R pipeline output dimension')
+		raise Exception('Error : wrong R pipeline output dimension')
 	print('DONE. Results exported to %s' % output)

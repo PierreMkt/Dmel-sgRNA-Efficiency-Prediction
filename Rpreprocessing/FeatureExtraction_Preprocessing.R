@@ -13,9 +13,11 @@ preprocess = function(input,Nmer){
            'TA','TC','TG','TT')
   
   if(Nmer==30){
-    diff = 0
-  } else{
-    diff = 4
+    start = 5
+    end = 24
+  } else {
+    start = 1
+    end = 20
   }
   
   # Progression Bar setup
@@ -31,23 +33,28 @@ preprocess = function(input,Nmer){
     }
     
     #GC content
-    nbG = str_count(substr(input[,1][l],5-diff,24-diff),'G')
-    nbC = str_count(substr(input[,1][l],5-diff,24-diff),'C')
-    GCcont = (nbG+nbC)/str_length(substr(input[,1][l],5-diff,24-diff))
+    nbG = str_count(substr(input[,1][l],start,end),'G')
+    nbC = str_count(substr(input[,1][l],start,end),'C')
+    GCcont = (nbG+nbC)/str_length(substr(input[,1][l],start,end))
     input$GCcont_20mer[l] = GCcont
     
     #Tm
     if(Nmer==30){
-      input$Tm0_6[l] = calcTm(substr(input[,1][l], 5, 11))
-      input$Tm7_14[l] = calcTm(substr(input[,1][l], 12, 19))
-      input$Tm15_19[l] = calcTm(substr(input[,1][l], 20, 24))
+      input$gRNA_23mer[l] = substr(input[,1][l],start,end+3)
+      input$Tm0_6[l] = calcTm(substr(input[,1][l], start, start+6))
+      input$Tm7_14[l] = calcTm(substr(input[,1][l], start+7, start+14))
+      input$Tm15_19[l] = calcTm(substr(input[,1][l], start+15, end))
       input$Tm30mer[l] = calcTm(input[,1][l])
-      input$gRNA_23mer[l] = substr(input[,1][l],5,27)
-    }else{
-      input$Tm1_7[l] = calcTm(substr(input[,1][l], 1, 7))
-      input$Tm8_15[l] = calcTm(substr(input[,1][l], 8, 15))
-      input$Tm16_20[l] = calcTm(substr(input[,1][l], 16, 20))
+    }else if(Nmer==23){
+      input$Tm1_7[l] = calcTm(substr(input[,1][l], start, start+6))
+      input$Tm8_15[l] = calcTm(substr(input[,1][l], start+7, start+14))
+      input$Tm16_20[l] = calcTm(substr(input[,1][l], start+15, end))
       input$Tm23mer[l] = calcTm(input[,1][l])
+    }else if(Nmer==20){
+      input$Tm1_7[l] = calcTm(substr(input[,1][l], start, start+6))
+      input$Tm8_15[l] = calcTm(substr(input[,1][l], start+7, start+14))
+      input$Tm16_20[l] = calcTm(substr(input[,1][l], start+15, end))
+      input$Tm20mer[l] = calcTm(input[,1][l])
     }
     
     #populate the single nt position and amount columns (Order1)
