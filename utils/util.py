@@ -160,9 +160,9 @@ def Output_Results(gRNAs_seq, gRNAs_param_REG, scores_REG, gRNAs_param_CLASS, sc
 		#outputs the scores in a dataframe and save
 		try :
 			if args.bin == "no":
-				pd.DataFrame(OrderedDict({'gRNA_23mer' : gRNAs_seq, 'regression scores' : scores_REG})).to_csv(output, index=False)
+				pd.DataFrame(OrderedDict({'gRNA_23mer' : gRNAs_seq, 'Efficiency prediction' : scores_REG})).to_csv(output, index=False)
 			else:
-				pd.DataFrame(OrderedDict({'gRNA_23mer' : gRNAs_seq, 'regression scores' : scores_REG, 'classification scores' : scores_CLASS})).to_csv(output, index=False)
+				pd.DataFrame(OrderedDict({'gRNA_23mer' : gRNAs_seq, 'Efficiency prediction' : scores_REG, 'Binary score' : scores_CLASS})).to_csv(output, index=False)
 		except:
 			raise Exception("Error in saving prediction results to %s. CSV file needed." % output)
 
@@ -175,9 +175,9 @@ def Output_Results(gRNAs_seq, gRNAs_param_REG, scores_REG, gRNAs_param_CLASS, sc
 		#outputs the scores in a dataframe and save 
 		try :
 			if args.bin == "no":
-				pd.DataFrame(OrderedDict({'gRNA_20mer' : gRNAs_seq, 'regression scores' : scores_REG})).to_csv(output, index=False)
+				pd.DataFrame(OrderedDict({'gRNA_20mer' : gRNAs_seq, 'Efficiency prediction' : scores_REG})).to_csv(output, index=False)
 			else:	
-				pd.DataFrame(OrderedDict({'gRNA_20mer' : gRNAs_seq, 'regression scores' : scores_REG, 'classification scores' : scores_CLASS})).to_csv(output, index=False)
+				pd.DataFrame(OrderedDict({'gRNA_20mer' : gRNAs_seq, 'Efficiency prediction' : scores_REG, 'Binary score' : scores_CLASS})).to_csv(output, index=False)
 		except:
 			raise Exception("Error in saving prediction results to %s. CSV file needed." % output)
 		
@@ -190,9 +190,9 @@ def Output_Results(gRNAs_seq, gRNAs_param_REG, scores_REG, gRNAs_param_CLASS, sc
 		#outputs the scores in a dataframe and save 
 		try :
 			if args.bin == "no":
-				pd.DataFrame(OrderedDict({'gRNA_23mer' : gRNAs_seq[:,1], 'gRNA_30mer' : gRNAs_seq[:,0], 'regression scores' : scores_REG})).to_csv(output, index=False)
+				pd.DataFrame(OrderedDict({'gRNA_23mer' : gRNAs_seq[:,1], 'gRNA_30mer' : gRNAs_seq[:,0], 'Efficiency prediction' : scores_REG})).to_csv(output, index=False)
 			else:	
-				pd.DataFrame(OrderedDict({'gRNA_23mer' : gRNAs_seq[:,1], 'gRNA_30mer' : gRNAs_seq[:,0], 'regression scores' : scores_REG, 'classification scores' : scores_CLASS})).to_csv(output, index=False)	
+				pd.DataFrame(OrderedDict({'gRNA_23mer' : gRNAs_seq[:,1], 'gRNA_30mer' : gRNAs_seq[:,0], 'Efficiency prediction' : scores_REG, 'Binary score' : scores_CLASS})).to_csv(output, index=False)	
 		except:
 			raise Exception("Error in saving prediction results to %s. CSV file needed." % output)
 	else :
