@@ -19,7 +19,7 @@ Format of the raw sequence :
 **30mer** : 20mer sgRNA + PAM + context sequence : **NNNN[20mer sgRNA sequence]NGGNNN**   
       
 2/ _--csv_ : .csv file with a header and the 20, 23 or 30mer sgRNAs beneath   
-Format of the **Comma delimited** .csv file
+Format of the **Comma delimited** .csv file:
 
 |  _Header_  |
 | ------------- |
@@ -28,9 +28,11 @@ Format of the **Comma delimited** .csv file
 |              ...                 | 
 |  GCCCAACCATGGGCAAGCGTCTGCAGGACA  | 
 
-3/ _--out_ : (optional argument) Path and/or Name of the predictions output csv file. Default is PATH_TO_FOLDER/sgRNA_efficiency_prediciton/sgRNA_predictions.csv   
+3/ _--out_ : (optional argument) Path and/or Name of the predictions output csv file.   
+Default is PATH_TO_FOLDER/sgRNA_efficiency_prediciton/sgRNA_predictions.csv   
 
-4/ --bin : (optional argument) Whether or not to include binary classification predictions of the sgRNA efficiency in the output. Default is 'no'.
+4/ --bin : (optional argument) Whether or not to include binary classification predictions of the sgRNA efficiency in the output.   
+Default is 'no'.
 
 ## Outputs
 The R Pipeline outputs the dataframe of the extracted features from the 20, 23 or 30mer sequences in PATH_TO_FOLDER/sgRNA_efficiency_prediction/Rpreprocessing/R_Featurized_sgRNA.csv
@@ -46,7 +48,7 @@ To run model prediction on a raw sgRNA and not print the classification predicti
 ```python3 dMel_CRIPSR_efficiency.py --seq <23 or 30mer sequence> [--out <PATH_TO_OUTPUT>]```   
    
 To run model prediction on a csv file and add the classification prediction column in the output csv file, type in the terminal:    
-```python3 dMel_CRIPSR_efficiency.py --csv <PATH_TO_CSV_FILE> [--out <PATH_TO_OUTPUT> --bin yes]```
+```python3 dMel_CRIPSR_efficiency.py --csv <PATH_TO_CSV_FILE> [--bin yes] [--out <PATH_TO_OUTPUT>]```
 
 ### Examples
 ```python3 dMel_CRIPSR_efficiency.py --seq TGGAGGCTGCTTTACCCGCTGTGGGGGCGC```    
