@@ -45,7 +45,7 @@ Preferably, make the "sgRNA_efficiency_prediction" folder your working directory
 ```cd PATH_TO_FOLDER/sgRNA_efficiency_prediction```
 
 To run model prediction on a raw sgRNA and not print the classification prediction, type in the terminal:   
-```python3 dMel_CRIPSR_efficiency.py --seq <23 or 30mer sequence> [--out <PATH_TO_OUTPUT>]```   
+```python3 dMel_CRIPSR_efficiency.py --seq <20, 23 or 30mer sequence> [--out <PATH_TO_OUTPUT>]```   
    
 To run model prediction on a csv file and add the classification prediction column in the output csv file, type in the terminal:    
 ```python3 dMel_CRIPSR_efficiency.py --csv <PATH_TO_CSV_FILE> [--bin yes] [--out <PATH_TO_OUTPUT>]```
