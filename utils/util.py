@@ -81,7 +81,7 @@ def PythonPreprocessing(path):
 		#Features of the sequences
 		gRNAs_param = np.array(df_gRNAs[1:,1:], dtype='float64')
 
-		model_REG_file = str(path)+'/utils/20mer_326FS_GBRT_REGmodel.pickle'
+		model_REG_file = str(path)+'/utils/20mer_102FS_Ridge_REGModel.pickle'
 		model_CLASS_file = str(path)+'/utils/20mer_137FS_GBC_BINmodel.pickle'
 
 		gRNAs_seq = df_gRNAs[1:,0] #20mer sequences
@@ -91,7 +91,7 @@ def PythonPreprocessing(path):
 		gRNAs_param = np.array(df_gRNAs[1:,2:], dtype='float64')
 
 		model_REG_file = str(path)+'/utils/30mer_121FS_LinSVR_REGmodel.pickle'
-		model_CLASS_file = str(path)+'/utils/30mer_400FS_GBRC_BINmodel.pickle'
+		model_CLASS_file = str(path)+'/utils/30mer_400FS_GBC_BINmodel.pickle'
 
 		gRNAs_seq = df_gRNAs[1:,0:2] 	 #23 and 30mer sequences
 	else :
@@ -166,7 +166,7 @@ def Output_Results(gRNAs_seq, gRNAs_param_REG, scores_REG, gRNAs_param_CLASS, sc
 		except:
 			raise Exception("Error in saving prediction results to %s. CSV file needed." % output)
 
-	elif gRNAs_param_REG.shape[1] == 326 : #shape of the dataframe after feature selection for 20mer sgRNAs
+	elif gRNAs_param_REG.shape[1] == 102 : #shape of the dataframe after feature selection for 20mer sgRNAs
 		#Change the output if specified
 		if args.out != None :
 			output = args.out

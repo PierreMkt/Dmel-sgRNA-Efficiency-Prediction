@@ -84,21 +84,21 @@ createColumns = function(input,Nmer){
     end = 20
   }
   
-  #create columns on single nt amount (dependant order1)
+  #create columns on single nt amount (independant order1)
   for (j in seq(length(nt))) {
     #amount
     nbColPos = paste('nb',nt[j],sep = '')
     input[[nbColPos]] = 0
   }
   
-  #create columns on single dint amount (dependant order2)
+  #create columns on single dint amount (independant order2)
   for (j in seq(length(dint))) {
     #amount
     nb_ColPos = paste('nb',dint[j],sep = '')
     input[[nb_ColPos]] = 0
   }
   
-  #create columns on single nt positions (independant order1)
+  #create columns on single nt positions (dependant order1)
   for (j in seq(length(nt))) { 
     #position
     for (loc in seq(start,end)) {
@@ -107,7 +107,7 @@ createColumns = function(input,Nmer){
     }
   }
   
-  #create columns on di-nt positions (independant order2)
+  #create columns on di-nt positions (dependant order2)
   for (j in seq(length(dint))) {
     #position
     for (loc in seq(start,end-1) ){
