@@ -1,6 +1,6 @@
 # Dmel-sgRNA-Efficiency-Prediction
 
-Python and R pipeline to predict sgRNA efficiency in *Drosophila melanogaster* via machine learning algorithms trained and optimized on CRIPSR pooled gene essentiality screens (see : https://www.biorxiv.org/content/early/2018/03/01/274464).   
+Python and R pipeline to predict sgRNA efficiency in *Drosophila melanogaster* via machine learning algorithms trained and optimized on CRISPR pooled gene essentiality screens (see : https://www.biorxiv.org/content/early/2018/03/01/274464).   
 The regression score returned ranges between 0 and 1, the higher the more effective the sgRNA is predicted to be.    
 The classification score is either 0 or 1 for low and high efficiency respectively.	
 
@@ -45,17 +45,17 @@ Preferably, make the "sgRNA_efficiency_prediction" folder your working directory
 ```cd PATH_TO_FOLDER/sgRNA_efficiency_prediction```
 
 To run model prediction on a raw sgRNA and not print the classification prediction, type in the terminal:   
-```python3 dMel_CRIPSR_efficiency.py --seq <20, 23 or 30mer sequence> [--out <PATH_TO_OUTPUT>]```   
+```python3 dMel_CRISPR_efficiency.py --seq <20, 23 or 30mer sequence> [--out <PATH_TO_OUTPUT>]```   
    
 To run model prediction on a csv file and add the classification prediction column in the output csv file, type in the terminal:    
-```python3 dMel_CRIPSR_efficiency.py --csv <PATH_TO_CSV_FILE> [--bin yes] [--out <PATH_TO_OUTPUT>]```
+```python3 dMel_CRISPR_efficiency.py --csv <PATH_TO_CSV_FILE> [--bin yes] [--out <PATH_TO_OUTPUT>]```
 
 ### Examples
-```python3 dMel_CRIPSR_efficiency.py --seq TGGAGGCTGCTTTACCCGCTGTGGGGGCGC```    
+```python3 dMel_CRISPR_efficiency.py --seq TGGAGGCTGCTTTACCCGCTGTGGGGGCGC```    
 Output : ```Predicted efficiency score [0:1] for TGGAGGCTGCTTTACCCGCTGTGGGGGCGC =  [0.38789814] (the higher the better)```
 
 TEST_sgRNA20mer_to_predict.csv, TEST_sgRNA23mer_to_predict.csv and TEST_sgRN30mer_to_predict are provided as test files.   
-```python3 dMel_CRIPSR_efficiency.py --csv TEST_sgRNA23mer_to_predict.csv --bin yes```     
+```python3 dMel_CRISPR_efficiency.py --csv TEST_sgRNA23mer_to_predict.csv --bin yes```     
 Output : ```DONE. Results exported to /home/.../sgRNA_efficiency_prediction/23mer_sgRNA_predictions.csv```
 
 ## Authors
