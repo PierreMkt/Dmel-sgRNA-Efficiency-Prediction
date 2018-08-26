@@ -1,0 +1,58 @@
+Work Transfer
+
+/BAGEL and MAGeCK
+	/Data_copy
+		-Raw read counts and groups
+		-Aggregation of the groups replicates
+
+		/readcountNorm
+			Normalization of the read counts and Log2FC computing
+
+	/FDR_Datasets
+		Dataframes used to compute the FDR of essential genes according to gene expression after BAGEL/MAGeCK processing and retrieving gene expression level from "False discovery rate calculation and replicates.csv"
+
+	/training_bjorklund
+	/training_Hart
+	/training_RNAi
+		different schemes to retrieve the essential genes lists to test different BAGEL inputs
+
+	-"Compare_FDR_all.R" : plot the FDR after BAGEL/MAGeCK processing
+	-"ess_rep2_MAGECK.csv" : 1340 essential genes identified
+	-"False discovery rate calculation and replicates.csv" : expression levels from the 14K genes of the pooled CRISPR screen
+	-"getfullDF_from_BF&FDR.R" : retrieve the outputs from BAGEL and create the final dataframes to compare the FDR
+
+
+
+/Machine_Learning
+	/ML_notebooks
+		Jupyter notebooks developped to identify the ML models and compare their efficiencies
+
+	-"Analysis-..." : predictions of the appropriate ML models and comparison of these predictions in "Analysis-Compare Predictions.R"
+	-"ML-..." : dataframes used to train the ML models
+	-"Preprocessing-Distance.R" : script to retrieve the distance from the PAM to the start of the exon (feature eventually not used in the ML model building phase)
+	-"ToPredict_..." : raw sgRNAs of the training set on which to make predictions
+
+
+
+/Master Thesis
+	LATEX files, biliography, drafts and manuscrispt for the Thesis
+
+
+
+/Papers&Docs
+	Scientific papers 
+
+
+
+/sgRNA_efficiency_prediction
+	Prediction command line tool, see https://github.com/PierreMkt/Dmel-sgRNA-Efficiency-Prediction
+
+
+
+/sgRNAs_targeting_Essential_Genes
+	Rstudio scripts to retrieve the sgRNAs targeting essential genes, retrieve the 30mer sequence from the exome and create the test set too.
+
+
+
+/strand_analysis
+	small Rscript to analyse if the strand targeted by the sgRNA (same as gene or not) impacts the KO efficiency 
