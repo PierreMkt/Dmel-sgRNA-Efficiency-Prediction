@@ -4,7 +4,8 @@ Python and R pipeline to predict sgRNA efficiency in *Drosophila melanogaster* v
 The regression score returned ranges between 0 and 1, the higher the more effective the sgRNA is predicted to be.    
 The classification score is either 0 or 1 for low and high efficiency respectively.	
 
-The details of the methods used to find the features and choose the machine learning model are available in the Master's_Thesis.pdf    
+The details of the methods used to find the features and choose the machine learning model are available in /doc/Master's_Thesis.pdf   
+/doc also includes the Rscripts to identify sgRNAs targeting essential genes as well as the jupyter notebooks to build the Machine Learning models.   
 
 ### Requirements
 Softwares : Python3 & R   
